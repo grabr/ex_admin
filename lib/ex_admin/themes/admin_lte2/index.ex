@@ -122,10 +122,12 @@ defmodule ExAdmin.Theme.AdminLte2.Index do
     |> Enum.reverse
   end
 
-  def batch_action_form(_conn, enabled?, scopes, name, _scope_counts, fun) do
-    msg = gettext "Are you sure you want to delete these %{name}? You wont be able to undo this.", name: name
+  def batch_action_form(conn, enabled?, scopes, name, _scope_counts, fun) do
     scopes = unless Application.get_env(:ex_admin, :scopes_index_page, true), do: [], else: scopes
     if enabled? or scopes != [] do
+      resource_model = resource_model(conn)
+      name = resource_model |> base_name |> Inflex.underscore |> pluralize
+      view_module = Module.concat(ExAdmin, resource_model <> "View")
       form "#collection_selection", action: "/admin/#{name}/batch_action", method: :post, "accept-charset": "UTF-8" do
         div style: "margin:0;padding:0;display:inline" do
           csrf = Plug.CSRFProtection.get_csrf_token
@@ -133,6 +135,7 @@ defmodule ExAdmin.Theme.AdminLte2.Index do
           input(type: :hidden, name: "_csrf_token", value: csrf)
         end
         input "#batch_action", name: "batch_action", type: :hidden
+        input "scope", name: "scope", type: :hidden, value: conn.params["scope"]
         div ".box-header" do
           div ".table_tools" do
             if enabled? do
@@ -143,9 +146,7 @@ defmodule ExAdmin.Theme.AdminLte2.Index do
                 div ".dropdown_menu_list_wrapper", style: "display: none;" do
                   div ".dropdown_menu_nipple"
                   ul ".dropdown_menu_list" do
-                    li do
-                      a ".batch_action " <> (gettext "Delete Selected"), href: "#", "data-action": :destroy, "data-confirm": msg
-                    end
+                    raw Phoenix.View.render(view_module, "batch_actions.html", [conn: conn])
                   end
                 end
               end

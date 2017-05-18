@@ -274,12 +274,10 @@ defmodule ExAdmin.Index do
 
   @doc false
   def render_index_pages(conn, page, scope_counts, cell, page_opts) do
-    # require IEx
-    # IEx.pry
     name = resource_model(conn) |> titleize |> Inflex.pluralize
     defn = conn.assigns.defn
     label = get_resource_label(conn) |> Inflex.pluralize
-    batch_actions = (not false in defn.batch_actions) and :delete in page_opts[:actions]
+    batch_actions = (not false in defn.batch_actions)
     opts = %{
       columns: Map.get(page_opts, :columns, 3),
       column_list: Map.get(page_opts, :column_list),
