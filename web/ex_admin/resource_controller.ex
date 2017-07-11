@@ -14,7 +14,7 @@ defmodule ExAdmin.ResourceController do
         conn = scrub_params(conn, resource, action)
         defn = get_registered_by_controller_route!(conn, resource)
         params = filter_params(conn.params, defn.resource_model)
-         |> load_associations(defn.resource_name, defn.resource_model)
+        # |> load_associations(defn.resource_name, defn.resource_model)
 
         if !restricted_action?(action, defn) do
           conn
