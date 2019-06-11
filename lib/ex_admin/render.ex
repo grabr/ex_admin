@@ -21,26 +21,33 @@ defimpl ExAdmin.Render, for: Float do
   def to_string(data), do: Float.to_string(data)
 end
 
-defimpl ExAdmin.Render, for: Ecto.Time do
+defimpl ExAdmin.Render, for: Time do
   def to_string(dt) do
     dt
-    |> Ecto.Time.to_string
+    |> Time.to_string
     |> String.replace("Z", "")
   end
 end
 
-defimpl ExAdmin.Render, for: Ecto.DateTime do
+defimpl ExAdmin.Render, for: DateTime do
   def to_string(dt) do
     dt
-    |> Utils.to_datetime
     |> :calendar.universal_time_to_local_time
     |> Utils.format_datetime
   end
 end
 
-defimpl ExAdmin.Render, for: Ecto.Date do
+defimpl ExAdmin.Render, for: NaiveDateTime do
   def to_string(dt) do
-    Ecto.Date.to_string dt
+    dt
+    |> :calendar.universal_time_to_local_time
+    |> Utils.format_datetime
+  end
+end
+
+defimpl ExAdmin.Render, for: Date do
+  def to_string(dt) do
+    Date.to_string dt
   end
 end
 

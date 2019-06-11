@@ -3,7 +3,6 @@ defmodule ExAdmin.Utils do
   A collection of utility functions.
   """
   require Logger
-  import Ecto.DateTime.Utils, only: [zero_pad: 2]
   import ExAdmin.Gettext
   @module Application.get_env(:ex_admin, :module)
 
@@ -279,14 +278,8 @@ defmodule ExAdmin.Utils do
   def confirm_message, do: gettext "Are you sure you want to delete this?"
 
   @doc false
-  def to_datetime(%Ecto.DateTime{} = dt) do
-    {:ok, {date, {h,m,s,_ms}}} = Ecto.DateTime.dump dt
-    {date, {h,m,s}}
-  end
-  def to_datetime(%DateTime{} = dt) do
-    DateTime.to_naive(dt)
-    |> NaiveDateTime.to_erl
-  end
+  def to_datetime(%DateTime{} = dt),
+    do: dt |> DateTime.to_naive |> NaiveDateTime.to_erl
 
   @doc false
   def format_time_difference({d, {h, m, s}}) do
@@ -358,4 +351,7 @@ defmodule ExAdmin.Utils do
   def use_authentication do
     false
   end
+
+  defp zero_pad(int, count),
+    do: int |> Integer.to_string() |> String.pad_leading(count, "0")
 end

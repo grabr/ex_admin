@@ -190,17 +190,22 @@ defmodule ExAdmin.Table do
         Map.get(table_opts, :filter, ""))
     end
   end
-  def handle_contents(%Ecto.DateTime{} = dt, field_name) do
+  def handle_contents(%DateTime{} = dt, field_name) do
     td class: to_class("td-", field_name) do
       text to_string(dt)
     end
   end
-  def handle_contents(%Ecto.Time{} = dt, field_name) do
+  def handle_contents(%NaiveDateTime{} = dt, field_name) do
     td class: to_class("td-", field_name) do
       text to_string(dt)
     end
   end
-  def handle_contents(%Ecto.Date{} = dt, field_name) do
+  def handle_contents(%Time{} = dt, field_name) do
+    td class: to_class("td-", field_name) do
+      text to_string(dt)
+    end
+  end
+  def handle_contents(%Date{} = dt, field_name) do
     td class: to_class("td-", field_name) do
       text to_string(dt)
     end
